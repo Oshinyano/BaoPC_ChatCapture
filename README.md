@@ -1,5 +1,7 @@
 # Chat-catch：宝武微聊采集与水晶魔方上传
 
+获取源码请在Issues留言
+
 面向 Windows 的宝武微聊群消息处理工具，支持两条采集路径，共用附件解析、群规则筛选和模型故障抽取：
 
 - **截图 OCR**：进入群聊 → 滚动截图 → OCR 与页面去重 → 生成聊天原文。
@@ -244,21 +246,3 @@ python main.py --group "宝武某某群" --up 3 --debug 2
 - `api_upload/`：eplat 查询初始化、停机匹配、回写及更新报告
 - `tools/build_database_icu.py`、`build.ps1`：本地数据库扩展构建及 Windows 分发打包
 - `tests/`：离线回归测试
-
-### 离线验证与待完成项
-
-不连接真实 OCR 或模型即可运行核心回归测试：
-
-```powershell
-python -m unittest tests.test_unified_cli tests.test_ocr_client tests.test_file_ocr tests.test_pipeline tests.test_processing tests.test_parsers tests.test_fault_extraction.FaultOutputTests -q
-```
-
-数据库、桌面与上传相关回归（数据库测试需要安装 `database` 可选依赖）：
-
-```powershell
-python -m unittest tests.test_database_capture tests.test_database_pipeline tests.test_database_integration tests.test_desktop_runtime tests.test_api_upload -q
-```
-
-2026-10-28 在隔离用户目录、移除业务凭证并阻止联网的条件下执行了后一组：共 152 项，记录到 48 次失败断言（含子测试）和 2 个错误，当前尚未全部通过。已观察到的差异包括已移除的 `atomic_snapshot` 字段仍被测试读取、上传状态/提示与旧断言不一致、部分上传替身未生成当前流程要求的报告，以及桌面日志回退用例失败。该结果不包含真实 OCR、模型、业务上传或重新打包验收。
-
-后续需排查这些失败并对齐当前行为，补做第二台无 Python / 编译器的 Windows x64 验收，继续验证更多媒体消息、状态语义及 ICU 在实际部署环境中的兼容性。数据库方式目前不能下载或恢复缺失附件，在线稳定读取也不保证跨库原子一致性。
